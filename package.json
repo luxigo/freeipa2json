@@ -1,0 +1,24 @@
+{
+  "name": "ipa2json",
+  "version": "1.0.0",
+  "description": "convert \"ipa user-find\" output to json",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luxigo/freeipa2json.git"
+  },
+  "keywords": [
+    "freeipa",
+    "convert"
+  ],
+  "author": "luc.deschenaux@freesurf.ch",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/luxigo/freeipa2json/issues"
+  },
+  "homepage": "https://github.com/luxigo/freeipa2json#readme"
+}
