@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+    */
 
 const fs=require('fs');
 const readline=require('readline');
@@ -37,11 +37,11 @@ async function main(){
       var m=line.match(/^  ([^:]+): (.*)/);
       if (m) {
         user[m[1]]=m[2];
-			}
+      }
     } else {
       list.push(user);
       user={};
-		}
+    }
   }
   list.push(user);
   console.log(JSON.stringify(list,false,4))
