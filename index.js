@@ -1,4 +1,4 @@
-#!/bin/env node
+#!/usr/bin/env node
 /*
     Copyright (C) 2021 luc.deschenaux@freesurf.ch
 

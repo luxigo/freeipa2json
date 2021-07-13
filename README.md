@@ -34,6 +34,7 @@ ipa2json ipa.txt
 alternatively you can convert the json to csv with:
 ```
 npm i -g json2csv
-ipa2json ipa.txt | json2csv
+npm i -g equalizejson
+ipa2json ipa.txt | equalizejson | json2csv
 ```
 
