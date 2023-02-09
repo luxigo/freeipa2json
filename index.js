@@ -18,8 +18,6 @@
 
 const fs=require('fs');
 const readline=require('readline');
-var  stream=process.stdin;
-var args;
 
 async function parse(filter){
     const rl = readline.createInterface({
@@ -68,7 +66,8 @@ function main(){
     }
   }
 
-  args=minimist(process.argv.slice(2),options);
+  var args=minimist(process.argv.slice(2),options);
+  var stream=process.stdin;
   var filter;
 
   if (args.help) {
@@ -105,8 +104,13 @@ function main(){
 
 function help() {
   var path = require('path');
-  console.log(`usage: ipa user-find --all | ${path.basename(__filename)} [<input-file>] [-h|--help] [-u|--usernames] [-a|--active] [-d|--disabled] [-f|--filter 'return user.account_disabled=="False"']`);
+  console.log(`usage: ipa user-find --all | ipa2json [<input-file>] [-h|--help] [-u|--usernames] [-a|--active] [-d|--disabled] [-f|--filter 'return user.account_disabled=="False"']`);
   process.exit(1);
 }
 
-main();
+if (require.main===module) {
+    main();
+} else {
+    module.exports=parse;
+}
+
