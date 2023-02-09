@@ -1,6 +1,6 @@
 {
   "name": "ipa2json",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "convert \"ipa user-find\" output to json",
   "main": "index.js",
   "bin": "index.js",

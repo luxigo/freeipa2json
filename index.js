@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
-    Copyright (C) 2021 luc.deschenaux@freesurf.ch
+    Copyright (C) 2021-2023 luc.deschenaux@freesurf.ch
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -18,34 +18,95 @@
 
 const fs=require('fs');
 const readline=require('readline');
+var  stream=process.stdin;
+var args;
 
-async function main(){
-  var stream;
-  if (process.argv.length > 2) {
-    stream=fs.createReadStream(process.argv[2])
-  } else {
-    stream=process.stdin;
-  }
-  const rl = readline.createInterface({
-    input: stream,
-    crlfDelay: Infinity
-  });
-  var list=[];
-  var user={};
-  for await (const line of rl) {
-    if (line.length) {
-      var m=line.match(/^  ([^:]+): (.*)/);
-      if (m) {
-        user[m[1]]=m[2];
+async function parse(filter){
+    const rl = readline.createInterface({
+      input: stream,
+      crlfDelay: Infinity
+    });
+
+    var list=[];
+    var user={};
+    var count=0;
+
+    for await (const line of rl) {
+      if (line.length) {
+        var m=line.match(/^  ([^:]+): (.*)/);
+        if (m) {
+          var key=m[1].trim().replace(/ /g,'_').toLowerCase();
+          user[key]=m[2];
+        } else {
+          console.error(`unexpected format: ${count} ${line}`);
+        }
+      } else {
+        if (!filter || (filter && filter(user))) {
+          list.push(user);
+        } 
+        user={};
       }
-    } else {
-      list.push(user);
-      user={};
+      ++count;
     }
-  }
-  list.push(user);
-  console.log(JSON.stringify(list,false,4))
+    if (!filter || (filter && filter(user))) {
+      list.push(user);
+    } 
+    return list;
 }
 
-main()
+function main(){
+  const minimist = require('minimist');
+  const options= {
+    string: ['filter'],
+    boolean: ['help','usernames','disabled','active'],
+    alias: {
+      h: 'help',
+      f: 'filter',
+      u: 'usernames',
+      d: 'disabled',
+      a: 'active'
+    }
+  }
 
+  args=minimist(process.argv.slice(2),options);
+  var filter;
+
+  if (args.help) {
+    help();
+  }
+
+  if (args.disabled) {
+    if (args.active||args.filter) throw "mutually exclusive: filter, active, disabled"
+    args.filter='return user.account_disabled=="True"';
+  }
+  if (args.active) {
+    if (args.disabled||args.filter) throw "mutually exclusive: filter, active, disabled"
+    args.filter='return user.account_disabled=="False"';
+  }
+  if (args.filter) {
+    filter=Function('user',args.filter);
+  }
+
+  if (args._) {
+    stream=fs.createReadStream(args._[0]);
+  }
+
+  return parse(filter)
+    .then((list) => {
+      if (args.usernames) {
+        list.forEach(function(user){
+          console.log(user.user_login);
+        })
+      } else {
+        console.log(JSON.stringify(list,false,4));
+      }
+    });
+}
+
+function help() {
+  var path = require('path');
+  console.log(`usage: ipa user-find --all | ${path.basename(__filename)} [<input-file>] [-h|--help] [-u|--usernames] [-a|--active] [-d|--disabled] [-f|--filter 'return user.account_disabled=="False"']`);
+  process.exit(1);
+}
+
+main();
