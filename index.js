@@ -17,7 +17,10 @@
     */
 
 const fs=require('fs');
+const path=require('path');
 const readline=require('readline');
+
+var stream=process.stdin;
 
 async function parse(filter){
     const rl = readline.createInterface({
@@ -56,22 +59,26 @@ function main(){
   const minimist = require('minimist');
   const options= {
     string: ['filter'],
-    boolean: ['help','usernames','disabled','active'],
+    boolean: ['help','usernames','disabled','active','version'],
     alias: {
       h: 'help',
       f: 'filter',
       u: 'usernames',
       d: 'disabled',
-      a: 'active'
+      a: 'active',
+      v: 'version'
     }
   }
 
   var args=minimist(process.argv.slice(2),options);
-  var stream=process.stdin;
   var filter;
 
   if (args.help) {
     help();
+  }
+
+  if (args.version) {
+    version();
   }
 
   if (args.disabled) {
@@ -108,9 +115,18 @@ function help() {
   process.exit(1);
 }
 
-if (require.main===module) {
-    main();
-} else {
-    module.exports=parse;
+function version(){
+  var pkg=require(path.resolve(__dirname,'package.json'));
+  console.log('v'+pkg.version);
+  process.exit(1);
 }
 
+const fromCommandLine=(require.main===module);
+
+if (fromCommandLine) {
+  main()
+
+} else {
+  module.exports=parse;
+
+}
