@@ -1,6 +1,6 @@
 {
   "name": "ipa2json",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "parse and filter \"ipa user-find\" output",
   "main": "index.js",
   "bin": "index.js",
@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/luxigo/freeipa2json/issues"
   },
-  "homepage": "https://github.com/luxigo/freeipa2json#readme"
+  "homepage": "https://github.com/luxigo/freeipa2json#readme",
+  "dependencies": {
+    "minimist": "^1.2.8"
+  }
 }
